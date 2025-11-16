@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Contact - MARCOM</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <script src="config.js"></script>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="index.html">← Back</a>
+    <div class="form">
+      <h2 style="color:var(--ocean-1)">📞 Contact MARCOM - More Lower Price!</h2>
+      <p style="line-height:1.6">We'd love to hear from you! Whether you have questions about our products, need repair services, or just want to say hello, feel free to reach out.</p>
+
+      <div style="background:rgba(15,155,211,0.1);padding:16px;border-radius:8px;margin-bottom:24px;border-left:4px solid var(--ocean-2)">
+        <h3 style="color:var(--ocean-1);margin-top:0">📍 Location</h3>
+        <p style="margin:8px 0">Pagadian City, Brgy. Tiguma Zone 1</p>
+        
+        <h3 style="color:var(--ocean-1)">📧 Email</h3>
+        <p style="margin:8px 0"><a href="mailto:ranielcabayaran@gmail.com" style="color:var(--accent);text-decoration:none">ranielcabayaran@gmail.com</a></p>
+        
+        <h3 style="color:var(--ocean-1)">📱 Phone</h3>
+        <p style="margin:8px 0"><a href="tel:0994-673-9925" style="color:var(--accent);text-decoration:none">0994-673-9925</a></p>
+      </div>
+
+      <h3 style="color:var(--ocean-1)">📍 Visit Us</h3>
+      <div style="border-radius:12px;overflow:hidden;margin-bottom:24px;box-shadow:0 8px 24px rgba(11,107,146,0.15);height:400px">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3922.4563491347746!2d123.48536!3d8.74611!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x325ac2c9e9e9e9e9%3A0x0!2sZone%201%20Tiguma%20Pagadian%20City!5e0!3m2!1sen!2sph!4v1234567890" width="100%" height="100%" style="border:none" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+
+      <h3 style="color:var(--ocean-1)">Send us a Message</h3>
+      <div id="message"></div>
+      <form id="contactForm">
+        <input name="name" placeholder="Your full name" required/>
+        <input name="email" placeholder="Your email address" type="email" required/>
+        <textarea name="message" placeholder="Your message (tell us how we can help)" rows="5"></textarea>
+        <button class="btn" style="width:100%" type="submit">Send Message</button>
+      </form>
+    </div>
+  </div>
+  <script>
+    document.getElementById('contactForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const messageDiv = document.getElementById('message');
+      const form = e.target;
+      const data = {
+        name: form.querySelector('[name="name"]').value,
+        email: form.querySelector('[name="email"]').value,
+        message: form.querySelector('[name="message"]').value,
+        timestamp: new Date().toISOString()
+      };
+      
+      // Save to localStorage for demo purposes
+      const messages = JSON.parse(localStorage.getItem('contact_messages') || '[]');
+      messages.push(data);
+      localStorage.setItem('contact_messages', JSON.stringify(messages));
+      
+      messageDiv.innerHTML = '<div class="alert success">✓ Thank you for your message! We\'ll get back to you soon.</div>';
+      form.reset();
+      setTimeout(() => {
+        messageDiv.innerHTML = '';
+      }, 4000);
+    });
+  </script>
+  <script src="interactions.js"></script>
+</body>
+</html>

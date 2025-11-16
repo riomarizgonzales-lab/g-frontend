@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Shopping Cart - MARCOM</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <script src="config.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo-section">
+        <div class="logo-icon">🎯</div>
+        <div class="logo-text">
+          <h1>MARCOM</h1>
+          <p>MORE LOWER PRICE</p>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html">🏠 Home</a>
+        <a href="index.html#products">💻 Products</a>
+        <a href="dashboard.html">📊 Dashboard</a>
+        <a href="about.html">ℹ️ About</a>
+        <a href="contact.html">📞 Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <a class="back-link" href="javascript:history.back()">← Back to Shopping</a>
+      <section class="cart-section">
+        <h2>🛒 Shopping Cart</h2>
+        <div id="emptyCart" style="text-align:center;padding:40px;color:#a0a8b0;display:none;">
+          <p style="font-size:18px;margin:0">Your cart is empty</p>
+          <a href="index.html" class="btn-primary">Continue Shopping</a>
+        </div>
+        <div id="cartItems"></div>
+        
+        <div style="margin-top:24px;display:flex;justify-content:flex-end;gap:12px;">
+          <button class="btn-primary" id="checkoutBtn">💳 Proceed to Checkout</button>
+        </div>
+      </section>
+    </main>
+
+    <footer>© 2025 MARCOM Computer Shop. All rights reserved.</footer>
+  </div>
+
+  <!-- Modal for checkout -->
+  <div id="checkoutModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:1000;align-items:center;justify-content:center;flex-direction:column;backdrop-filter:blur(4px);">
+    <div style="width:90%;max-width:500px;max-height:90vh;overflow-y:auto;background:var(--midnight-card);padding:36px;border-radius:12px;border:1px solid var(--midnight-border);box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+      <h3 style="margin:0 0 16px;font-size:20px;font-weight:700;color:var(--accent-white);">📝 Complete Your Order</h3>
+      <form id="checkoutForm">
+        <input id="chk-name" placeholder="👤 Full Name" required/>
+        <input id="chk-email" placeholder="📧 Email" type="email" required/>
+        <input id="chk-address" placeholder="📍 Delivery Address" required/>
+        <textarea id="chk-notes" placeholder="💬 Special requests (optional)" rows="3"></textarea>
+        <div style="margin-top:16px;display:flex;gap:10px;justify-content:flex-end;">
+          <button class="btn-secondary" type="button" onclick="document.getElementById('checkoutModal').style.display='none'">Cancel</button>
+          <button class="btn-primary" type="submit">✓ Place Order</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="cart.js"></script>
+  <script>
+    // Checkout handling (cart functions are in cart.js to avoid duplication)
+    document.getElementById('checkoutBtn').onclick = function() {
+      const cart = JSON.parse(localStorage.getItem('blue_cart') || '[]');
+      if(cart.length === 0) {
+        alert('Your cart is empty');
+        return;
+      }
+      const user = JSON.parse(localStorage.getItem('blue_user') || '{}');
+      if(!user.id) {
+        alert('Please login first');
+        location.href = 'login.html';
+        return;
+      }
+      document.getElementById('chk-name').value = user.name || '';
+      document.getElementById('chk-email').value = user.email || '';
+      document.getElementById('checkoutModal').style.display = 'flex';
+    };
+
+    document.getElementById('checkoutForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const API = (window.API_URL || 'http://localhost:5000') + '/api';
+      const cart = JSON.parse(localStorage.getItem('blue_cart') || '[]');
+      if(cart.length === 0) return alert('Your cart is empty');
+      const name = document.getElementById('chk-name').value.trim();
+      const email = document.getElementById('chk-email').value.trim();
+      const address = document.getElementById('chk-address').value.trim();
+      const notes = document.getElementById('chk-notes').value.trim();
+
+      if(!name) return alert('Please enter your full name');
+      if(!email) return alert('Please enter your email');
+      if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return alert('Please enter a valid email address');
+      if(!address) return alert('Please enter delivery address');
+
+      const payload = { name, email, address, description: notes, items: cart };
+      try {
+        const res = await fetch(`${API}/orders`, {
+          method:'POST', headers:{'content-type':'application/json'},
+          body: JSON.stringify(payload)
+        });
+        if(res.ok){
+          alert('Order placed successfully!');
+          localStorage.removeItem('blue_cart');
+          document.getElementById('checkoutModal').style.display = 'none';
+          location.href = 'dashboard.html';
+        } else {
+          const data = await res.json().catch(()=>({}));
+          alert('Error: ' + (data.message || 'Order failed'));
+        }
+      } catch(e){
+        alert('Connection error: ' + e.message);
+      }
+    });
+
+    window.addEventListener('load', () => {
+      renderCart();
+    });
+  </script>
+</body>
+</html>

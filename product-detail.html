@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Product Details - MARCOM</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <script src="config.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo-section">
+        <div class="logo-icon">🎯</div>
+        <div class="logo-text">
+          <h1>MARCOM</h1>
+          <p>MORE LOWER PRICE</p>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html">🏠 Home</a>
+        <a href="index.html#products">💻 Products</a>
+        <a href="cart.html">🛒 Cart</a>
+        <a href="about.html">ℹ️ About</a>
+        <a href="contact.html">📞 Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <a class="back-link" href="javascript:history.back()">← Back to Products</a>
+    
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;margin-top:24px;max-width:1000px;width:100%">
+      <!-- Product Image -->
+      <div class="form" style="padding:0;overflow:hidden">
+        <div id="productImage" style="width:100%;height:400px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;border-radius:12px">
+          <img id="mainImage" src="" alt="Product" style="width:100%;height:100%;object-fit:cover" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%23e0e0e0%22 width=%22400%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%23999%22%3EProduct Image Not Available%3C/text%3E%3C/svg%3E'"/>
+        </div>
+      </div>
+
+      <!-- Product Details -->
+      <div class="form">
+        <h1 id="productName" style="color:var(--ocean-1);margin-top:0">Product Name</h1>
+        
+        <div style="display:flex;align-items:center;gap:12px;margin:16px 0">
+          <div style="font-size:24px;font-weight:700;color:var(--ocean-2)">₱ <span id="productPrice">0.00</span></div>
+          <div style="background:var(--success);color:white;padding:4px 12px;border-radius:6px;font-size:13px;font-weight:600">In Stock</div>
+        </div>
+
+        <p id="productDescription" style="color:#666;line-height:1.7;margin:16px 0">Product description goes here</p>
+
+        <div style="margin-top:24px;padding-top:24px;border-top:1px solid #eee">
+          <h3 style="color:var(--ocean-1);margin-top:0">Quantity</h3>
+          <div style="display:flex;gap:12px;align-items:center">
+            <button class="btn small" id="decreaseQty" style="background:#999;padding:8px 12px">−</button>
+            <input type="number" id="quantity" value="1" min="1" style="width:60px;padding:8px;border:1px solid #ddd;border-radius:6px;text-align:center;font-weight:600"/>
+            <button class="btn small" id="increaseQty" style="background:#999;padding:8px 12px">+</button>
+          </div>
+        </div>
+
+        <div style="margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <button class="btn" id="addCartBtn" style="width:100%;background:var(--ocean-2)">🛒 Add to Cart</button>
+          <button class="btn" id="buyNowBtn" style="width:100%;background:var(--accent)">💳 Buy Now</button>
+        </div>
+
+        <div id="message" style="margin-top:16px"></div>
+
+        <div style="background:rgba(15,155,211,0.1);padding:16px;border-radius:8px;margin-top:24px;border-left:4px solid var(--ocean-2)">
+          <h4 style="color:var(--ocean-1);margin-top:0">📦 Product Information</h4>
+          <ul style="margin:0;padding-left:20px;color:#666;font-size:14px">
+            <li>Original & Genuine Product</li>
+            <li>Cash on Delivery Available</li>
+            <li>Free Shipping on Orders Over ₱500</li>
+            <li>30-Day Money Back Guarantee</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="interactions.js"></script>
+  <script>
+    const API = (window.API_URL || 'http://localhost:5000') + '/api';
+    const messageDiv = document.getElementById('message');
+    let product = null;
+
+    // Get product ID from URL
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get('id');
+
+    if (!productId) {
+      messageDiv.innerHTML = '<div class="alert error">Product not found</div>';
+    } else {
+      // Fetch product details
+      fetch(`${API}/products/${productId}`)
+        .then(res => res.json())
+        .then(data => {
+          product = data;
+          document.getElementById('productName').textContent = product.name;
+          document.getElementById('productPrice').textContent = Number(product.price).toFixed(2);
+          document.getElementById('productDescription').textContent = product.description || 'No description available';
+          
+          // Load image with proper URL handling
+          const img = document.getElementById('mainImage');
+          if (product.imageUrl) {
+            const imageSrc = product.imageUrl.startsWith('http') ? product.imageUrl : (window.API_URL + product.imageUrl);
+            img.src = imageSrc;
+          } else {
+            // Use placeholder SVG if no image
+            img.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect fill=%22%23e0e0e0%22 width=%22400%22 height=%22400%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%23999%22%3ENo Image Available%3C/text%3E%3C/svg%3E';
+          }
+          
+          document.title = `${product.name} - MARCOM`;
+        })
+        .catch(err => {
+          console.error('Error loading product:', err);
+          messageDiv.innerHTML = '<div class="alert error">Failed to load product</div>';
+        });
+    }
+
+    // Quantity controls
+    document.getElementById('decreaseQty').addEventListener('click', () => {
+      const qty = document.getElementById('quantity');
+      if (qty.value > 1) qty.value--;
+    });
+
+    document.getElementById('increaseQty').addEventListener('click', () => {
+      const qty = document.getElementById('quantity');
+      qty.value = parseInt(qty.value) + 1;
+    });
+
+    // Add to cart
+    document.getElementById('addCartBtn').addEventListener('click', () => {
+      if (!product) return;
+      const qty = parseInt(document.getElementById('quantity').value);
+      const user = JSON.parse(localStorage.getItem('blue_user') || '{}');
+      
+      if (!user.id) {
+        alert('Please login first');
+        location.href = 'login.html';
+        return;
+      }
+
+      const cart = JSON.parse(localStorage.getItem('blue_cart') || '[]');
+      const existingItem = cart.find(item => item._id === product._id);
+      
+      if (existingItem) {
+        existingItem.qty += qty;
+      } else {
+        cart.push({
+          _id: product._id,
+          name: product.name,
+          price: product.price,
+          imageUrl: product.imageUrl,
+          qty: qty
+        });
+      }
+      
+      localStorage.setItem('blue_cart', JSON.stringify(cart));
+      messageDiv.innerHTML = '<div class="alert success">✓ Added to cart! <a href="cart.html" style="color:var(--success);font-weight:600">View Cart</a></div>';
+      setTimeout(() => messageDiv.innerHTML = '', 4000);
+    });
+
+    // Buy now
+    document.getElementById('buyNowBtn').addEventListener('click', () => {
+      if (!product) return;
+      const qty = parseInt(document.getElementById('quantity').value);
+      const user = JSON.parse(localStorage.getItem('blue_user') || '{}');
+      
+      if (!user.id) {
+        alert('Please login first');
+        location.href = 'login.html';
+        return;
+      }
+
+      // Add to cart and redirect to checkout
+      const cart = JSON.parse(localStorage.getItem('blue_cart') || '[]');
+      const existingItem = cart.find(item => item._id === product._id);
+      
+      if (existingItem) {
+        existingItem.qty += qty;
+      } else {
+        cart.push({
+          _id: product._id,
+          name: product.name,
+          price: product.price,
+          imageUrl: product.imageUrl,
+          qty: qty
+        });
+      }
+      
+      localStorage.setItem('blue_cart', JSON.stringify(cart));
+      location.href = 'cart.html';
+    });
+  </script>
+</body>
+</html>
+
+
+
+    

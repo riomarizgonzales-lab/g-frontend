@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Dashboard - MARCOM</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <script src="config.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo-section">
+        <div class="logo-icon">🎯</div>
+        <div class="logo-text">
+          <h1>MARCOM</h1>
+          <p>MORE LOWER PRICE</p>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html">🏠 Home</a>
+        <a href="cart.html">🛒 Cart</a>
+        <a href="#"><span id="userName">👤 User</span></a>
+        <button id="logoutBtn" style="background: rgba(255, 107, 107, 0.2); border: 1px solid rgba(255, 107, 107, 0.4); color: #ff6b6b; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-weight: 600;">🚪 Logout</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1>👋 Welcome back, <span id="dashUserName">User</span>!</h1>
+        <p>Browse and add your favorite products to your cart</p>
+      </section>
+
+      <section class="products-section">
+        <h2>🛍️ Featured Products</h2>
+        <div id="productsGrid" class="products-grid"></div>
+      </section>
+    </main>
+
+    <footer>© 2025 MARCOM Computer Shop. All rights reserved.</footer>
+  </div>
+
+  <script src="main.js"></script>
+  <script src="interactions.js"></script>
+  <script>
+    const user = JSON.parse(localStorage.getItem('blue_user'));
+    if(!user || !user.id) {
+      alert('Please login first');
+      location.href = 'login.html';
+    } else {
+      document.getElementById('userName').textContent = user.name;
+      document.getElementById('dashUserName').textContent = user.name;
+    }
+
+    function updateCartCount(){
+      // Cart count display removed
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      if(confirm('Logout from your account?')){
+        localStorage.removeItem('blue_user');
+        location.href = 'index.html';
+      }
+    });
+
+    window.addEventListener('load', () => {
+      // Cart count display removed
+    });
+
+    // Override addToCart to update count
+    const originalAddToCart = window.addToCart;
+    window.addToCart = function(item){
+      originalAddToCart(item);
+      // Cart count display removed
+    };
+  </script>
+</body>
+</html>

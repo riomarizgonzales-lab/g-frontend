@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Signup - MARCOM</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <script src="config.js"></script>
+</head>
+<body>
+  <div class="container auth-container">
+    <header>
+      <div class="logo-section">
+        <div class="logo-icon">🎯</div>
+        <div class="logo-text">
+          <h1>MARCOM</h1>
+          <p>MORE LOWER PRICE</p>
+        </div>
+      </div>
+      <nav>
+        <a href="index.html">🏠 Home</a>
+        <a href="index.html#products">💻 Products</a>
+        <a href="about.html">ℹ️ About</a>
+        <a href="contact.html">📞 Contact</a>
+      </nav>
+    </header>
+
+    <main class="auth-main">
+      <div class="auth-form-wrapper">
+        <div class="auth-card">
+          <h2>✨ Create Account</h2>
+          <p>Join MARCOM and start shopping</p>
+          <div id="message"></div>
+          <form id="signupForm">
+            <input id="name" placeholder="👤 Full name" required/>
+            <input id="email" placeholder="📧 Email address" type="email" required/>
+            <input id="password" placeholder="🔐 Password" type="password" required/>
+            <select id="role">
+              <option value="user">👥 Customer</option>
+              <option value="admin">⚙️ Admin</option>
+            </select>
+            <button type="submit">✓ Create account</button>
+          </form>
+          <div class="auth-footer-text">Already have an account? <a href="login.html">Sign in here</a></div>
+        </div>
+      </div>
+    </main>
+
+    <footer>© 2025 MARCOM Computer Shop. All rights reserved.</footer>
+  </div>
+  <script src="auth.js"></script>
+  <script>
+    const signupForm = document.getElementById('signupForm');
+    const messageDiv = document.getElementById('message');
+    const API = (window.API_URL || 'http://localhost:5000') + '/api';
+
+    signupForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      messageDiv.innerHTML = '<div class="alert" style="text-align:center">Creating account...</div>';
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const role = document.getElementById('role').value;
+      
+      try {
+        const res = await fetch(`${API}/auth/signup`, {
+          method:'POST', headers:{'content-type':'application/json'},
+          body: JSON.stringify({ name, email, password, role })
+        });
+        const data = await res.json();
+        if(res.ok){
+          messageDiv.innerHTML = '<div class="alert success">✓ Account created successfully! Redirecting...</div>';
+          setTimeout(() => {
+            location.href = 'login.html';
+          }, 1500);
+        } else {
+          messageDiv.innerHTML = '<div class="alert error">✗ ' + (data.message || 'Signup failed') + '</div>';
+        }
+      } catch(e){
+        messageDiv.innerHTML = '<div class="alert error">✗ Connection error: ' + e.message + '</div>';
+      }
+    });
+  </script>
+</body>
+</html>
+
