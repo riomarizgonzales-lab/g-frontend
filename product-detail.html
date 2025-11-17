@@ -102,7 +102,7 @@
           // Load image with proper URL handling
           const img = document.getElementById('mainImage');
           if (product.imageUrl) {
-            const imageSrc = product.imageUrl.startsWith('http') ? product.imageUrl : (window.API_URL + product.imageUrl);
+             const imageSrc = product.imageUrl.startsWith('http') ? product.imageUrl : ((window.API_URL || window.location.origin) + product.imageUrl);
             img.src = imageSrc;
           } else {
             // Use placeholder SVG if no image
