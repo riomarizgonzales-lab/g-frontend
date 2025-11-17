@@ -45,7 +45,7 @@ function renderProducts(list){
       <div class="product-content">
         <div class="product-name">${p.name}</div>
         <div class="product-description">${p.description ? p.description : 'Premium tech product'}</div>
-        <div class="product-price">${Number(p.price).toFixed(2)}</div>
+        <div class="product-price">₱ ${Number(p.price).toFixed(2)}</div>
         <div class="product-actions">
           <button class="btn-add-cart" data-id="${p._id}" data-name="${p.name}" data-price="${p.price}" data-imageurl="${p.imageUrl || ''}" data-description="${p.description || ''}"> Add Cart</button>
           <button class="btn-view" onclick="location.href='product-detail.html?id=${p._id}'"> View</button>
@@ -95,3 +95,4 @@ function addToCart(item){
 }
 
 window.addEventListener('load', fetchProducts);
+
